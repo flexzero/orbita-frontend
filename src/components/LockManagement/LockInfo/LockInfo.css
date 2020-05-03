@@ -1,0 +1,7 @@
+.lockInfoItem {
+
+}
+
+.lockInfoItem > * {
+    margin-right: 32px;
+}
