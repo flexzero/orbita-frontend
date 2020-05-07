@@ -16,6 +16,8 @@ export default function (state = {}, action) {
       return { ...state, allIds: [...state.allIds, response.keyboardPwdId] };
     case types.DELETE_PASSCODE:
       return { ...state, deletingPasscodeId: action.payload.passcodeId };
+    case types.EDIT_PASSCODE:
+      return { ...state, editingPasscodeId: action.payload.passcodeId };
     case types.DELETE_PASSCODE_SUCCESS:
       const { deletedPasscodeId } = response;
       return {

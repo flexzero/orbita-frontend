@@ -7,6 +7,8 @@ import { addPasscodeSaga } from "./addPasscodeSaga";
 import { deletePasscodeSaga } from "./deletePasscodeSaga";
 
 import * as types from "../actions";
+import { notificationsSaga } from "./notificationsSaga";
+import { addNotificationSaga } from "./addNotificationSaga";
 
 export default function* watchUserAuthentication() {
   yield takeLatest(types.LOGIN_USER, loginSaga);
@@ -15,4 +17,7 @@ export default function* watchUserAuthentication() {
   yield takeLatest(types.REQUEST_PASSCODES, requestPasscodesSaga);
   yield takeLatest(types.ADD_PASSCODE, addPasscodeSaga);
   yield takeLatest(types.DELETE_PASSCODE, deletePasscodeSaga);
+  yield takeLatest(types.DELETE_PASSCODE_SUCCESS, notificationsSaga);
+  yield takeLatest(types.ADD_PASSCODE_SUCCESS, notificationsSaga);
+  yield takeLatest(types.ADD_NOTIFICATION, addNotificationSaga);
 }

@@ -75,7 +75,7 @@ export default function Dashboard(props) {
       <div className={classes.root}>
         <CssBaseline />
         <Header></Header>
-        <Drawer
+        {/* <Drawer
           className={classes.drawer}
           variant="permanent"
           classes={{
@@ -94,7 +94,7 @@ export default function Dashboard(props) {
               </ListItem>
             ))}
           </List>
-        </Drawer>
+        </Drawer> */}
         <main className={classes.content}>
           <Switch>
             <Route exact path="/" component={GroupConainer} />
@@ -103,6 +103,7 @@ export default function Dashboard(props) {
             <Route path="/add-passcode/:id" component={AddPasscode} />
           </Switch>
         </main>
+        {console.log("Notifications on main component: ", notifications)}
         {notifications.map((notif) => (
           <Notification key={notif.id} message={notif.message} severity={notif.severity} />
         ))}

@@ -19,11 +19,10 @@ export async function requestPasscodes() {
   const REQUEST_PASSCODES_ENDPOINT = baseUrl("passcodes", true);
 
   try {
-    console.log("Requesting passcodes....");
+    
     const requestPasscodesResponse = await axios.get(
       REQUEST_PASSCODES_ENDPOINT
     );
-    console.log("request passcodes service: ", requestPasscodesResponse);
     return requestPasscodesResponse.data;
   } catch (err) {
     console.log(err);
@@ -66,7 +65,6 @@ export async function deletePasscode(payload) {
 
   try {
     const response = await axios.post(DELETE_PASSCODE_ENDPOINT, postParams);
-    console.log("response from deletePasscode service: ", response);
     return response.data;
   } catch (error) {
     console.log(error);
