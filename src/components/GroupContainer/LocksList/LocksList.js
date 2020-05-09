@@ -15,8 +15,8 @@ export default function LocksList(props) {
     },
   } = state;
   const dispatch = useDispatch();
-  const { locks } = state;
-  const lockIds = locks.allIds;
+  const { locks: { locks, } } = state;
+  const { selectedLocks } = props;
 
   useDeepCompareEffect(() => {
     dispatch(requestLocks());
@@ -24,8 +24,8 @@ export default function LocksList(props) {
 
   return (
     <Grid container spacing={2}>
-      {lockIds ? (
-        lockIds.map((lockId, i) => (
+      {selectedLocks ? (
+        selectedLocks.map((lockId, i) => (
           <Grid item md={4} key={lockId}>
             <LockCard
               onSendPasscode={props.onSendPasscode}

@@ -17,11 +17,11 @@ export default function LockCard(props) {
   const { lockAlias, electricQuantity, lockId } = lockData;
 
   const onSendPasscode = (id) => {
-    history.push(`/add-passcode/${id}`, props);
+    history.push(`/add-passcode/${id}`);
   };
 
   const onManagePasscode = (id) => {
-    history.push(`/lock/${id}`, props);
+    history.push(`/lock/${id}`);
   };
 
   return (

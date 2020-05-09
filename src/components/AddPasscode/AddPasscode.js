@@ -21,9 +21,11 @@ import DateFnsUtils from "@date-io/date-fns";
 import TextFild from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { generateRandomPasscode } from "../../utils/utils";
-import { useSelector ,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { addPasscode } from "../../actions/locksActions";
-import { getUnixDateTime } from "../../utils/utils"
+import { getUnixDateTime } from "../../utils/utils";
+import { Link as RouterLink } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const styleSheet = {
   containerPaperStyle: {
@@ -60,13 +62,15 @@ export default function AddPasscode(props) {
   const [passcode, setPasscode] = useState("");
   const [passcodeName, setPasscodeName] = useState("");
   const dispatch = useDispatch();
+
   const {
+    history,
     match: {
       params: { id: lockId },
     },
   } = props;
 
-  const  { addPasscodeLoading } = useSelector(state => state.loading.loaders);
+  const { addPasscodeLoading } = useSelector(state => state.loading.loaders);
 
   const getRandomPasscode = () => {
     setPasscode(generateRandomPasscode());
@@ -84,6 +88,7 @@ export default function AddPasscode(props) {
         passcodeName,
         startDate: getUnixDateTime(selectedStartDate),
         endDate: getUnixDateTime(selectedEndDate),
+        history,
       })
     );
   };
@@ -96,12 +101,14 @@ export default function AddPasscode(props) {
     setPasscode(e.target.value);
   };
 
+  const LinkRouter = (props) => <Link {...props} component={RouterLink} />;
+
   return (
     <div>
       <Breadcrumbs aria-label="breadcrumb">
-        <Link color="inherit" href="/">
-          Home
-        </Link>
+        <LinkRouter color="inherit" to="/">
+          Dashboard
+        </LinkRouter>
         <Typography color="textPrimary">Add Passcode</Typography>
       </Breadcrumbs>
       <Paper elevation={3} style={styleSheet.containerPaperStyle}>

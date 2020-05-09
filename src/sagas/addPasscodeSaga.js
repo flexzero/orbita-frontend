@@ -6,10 +6,14 @@ import { delay } from "../utils/utils";
 
 export function* addPasscodeSaga(payload) {
   try {
+    const { payload: { history, lockId } } = payload;
     const response = yield call(addPasscode, payload);
-    put({ type: types.ADD_PASSCODE_SUCCESS, response });
+    const id = nanoid(5);
+    response.notification = { id, message: "passcode has been added successfully", severity: "success" };
+    yield put({ type: types.ADD_PASSCODE_SUCCESS, response });
+    history.push(`/lock/${lockId}`);
   } catch (error) {
-    console.log(error);
+    console.log("error in add passcode saga: ", error);
     yield put({ type: types.ADD_PASSCODE_ERROR, error });
   }
 }

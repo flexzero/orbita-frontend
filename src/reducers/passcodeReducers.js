@@ -13,11 +13,15 @@ export default function (state = {}, action) {
     case types.REQUEST_PASSCODES_ERROR:
       return { ...state, ...response };
     case types.ADD_PASSCODE_SUCCESS:
+      console.log("response in ADD_PASSCODE_SUCCESS action: ", response);
       return { ...state, allIds: [...state.allIds, response.keyboardPwdId] };
     case types.DELETE_PASSCODE:
       return { ...state, deletingPasscodeId: action.payload.passcodeId };
     case types.EDIT_PASSCODE:
       return { ...state, editingPasscodeId: action.payload.passcodeId };
+    case types.EDIT_PASSCODE_SUCCESS:
+      const { data: { keyboardPwdId } } = response;
+      return { ...state, byId: {...state.byId ,[keyboardPwdId]: response.data}}
     case types.DELETE_PASSCODE_SUCCESS:
       const { deletedPasscodeId } = response;
       return {

@@ -103,7 +103,6 @@ export default function Dashboard(props) {
             <Route path="/add-passcode/:id" component={AddPasscode} />
           </Switch>
         </main>
-        {console.log("Notifications on main component: ", notifications)}
         {notifications.map((notif) => (
           <Notification key={notif.id} message={notif.message} severity={notif.severity} />
         ))}

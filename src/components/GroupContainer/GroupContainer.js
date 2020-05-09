@@ -1,22 +1,19 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-
 import Box from "@material-ui/core/Box";
 import LockList from "./LocksList/LocksList";
 import "./GroupContainer.css";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import SearchIcon from "@material-ui/icons/Search";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import { Link as RouterLink } from "react-router-dom";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import Typography from "@material-ui/core/Typography";
+import LockDataList from "../LockManagement/LockDataList/LockDataList";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,18 +35,28 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function GroupConainer(props) {
-  const [age, setAge] = React.useState("");
+  const [lockUser, setLockUser] = React.useState(0);
+
+  const { locks: { locks, users } } = useSelector((state) => state);
 
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setLockUser(event.target.value);
   };
+
+  let selectedLocks = [];
+  if (users && lockUser !== 0) {
+    selectedLocks = [users.byId[lockUser].assignedLockId];
+  } else if (users && lockUser === 0) {
+    const allAssignedIds = users.allIds.map(id => users.byId[id].assignedLockId);
+    selectedLocks = locks.allIds.filter(id => !allAssignedIds.includes(id));
+  }
+
+
   const classes = useStyles();
   return (
     <div>
       <Breadcrumbs aria-label="breadcrumb">
-        <RouterLink color="inherit" to="/">
-          Dashboard
-        </RouterLink>
+      <Typography color="textPrimary">Dashboard</Typography>
       </Breadcrumbs>
       <div className={classes.root}>
         <Grid container>
@@ -71,23 +78,19 @@ export default function GroupConainer(props) {
                       <Select
                         labelId="user-select"
                         id="user-select-id"
-                        value={age}
+                        value={lockUser}
                         onChange={handleChange}
                         label="Users"
                         size="small"
                       >
-                        <MenuItem value={10}>
-                          flexzero.reborn@gmail.com
-                        </MenuItem>
-                        <MenuItem value={20} selected>
-                          Netfone
-                        </MenuItem>
+                        {users ? users.allIds.map((id, i) => <MenuItem value={id}>{`${users.byId[id].firstName} ${users.byId[id].lastName}`}</MenuItem>) : <MenuItem value={0} selected>Loading...</MenuItem>}
+                        <MenuItem value={0}>Not Assigned</MenuItem>
                       </Select>
                     </FormControl>
                   </Box>
                 </Box>
                 <div className={classes.locksContainer}>
-                  <LockList />
+                  <LockList selectedLocks={selectedLocks} />
                 </div>
               </Grid>
             </Paper>

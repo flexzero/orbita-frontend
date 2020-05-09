@@ -12,18 +12,15 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
+import { useEffect } from "react";
+import { getUnlockRecords } from "../../../../actions/locksActions";
+import { useDispatch, useSelector } from "react-redux";
+import { epochToDate, getUnlockRecordType } from "../../../../utils/utils";
+import Skeleton from '@material-ui/lab/Skeleton';
 
 function createData(operator, unlockMethod, unlockTime, status) {
   return { operator, unlockMethod, unlockTime, status };
 }
-
-const rows = [
-  createData(8989, "unlocked via passcode", "20-03-24 12:20", "success"),
-  createData(8989, "unlocked via passcode", "20-03-24 11:20", "success"),
-  createData(8989, "unlocked via passcode", "20-03-24 10:20", "failed"),
-  createData(8989, "unlocked via passcode", "20-03-24 9:30", "failed"),
-  createData(8989, "unlocked via passcode", "20-03-24 3:20", "success")
-];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -76,10 +73,10 @@ const headCells = [
 function EnhancedTableHead(props) {
   const {
     classes,
-   
+
     order,
     orderBy,
-   
+
     onRequestSort
   } = props;
   const createSortHandler = property => event => {
@@ -134,13 +131,13 @@ const useToolbarStyles = makeStyles(theme => ({
   highlight:
     theme.palette.type === "light"
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark
+      },
   title: {
     flex: "1 1 100%"
   }
@@ -193,7 +190,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function RecordsTable() {
+export default function RecordsTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -201,6 +198,48 @@ export default function RecordsTable() {
   const [page, setPage] = React.useState(0);
   const dense = false;
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const dispatch = useDispatch();
+  const { unlockRecords, loading: { loaders: { unlockRecordsLoading } } } = useSelector((state) => state);
+  const { lockId } = props;
+
+  const getSuccessFailure = (success) => {
+    return success === 0 ? <span style={{ color: "red" }}>unlock failed</span> : <span style={{ color: "green" }}> unlock successfull</span>;
+  }
+
+
+  let rows = [];
+
+  if (!unlockRecordsLoading) {
+    rows = [
+      ...unlockRecords.map((unlockRecord) => createData(
+        unlockRecord.username,
+        getUnlockRecordType(unlockRecord.recordType),
+        epochToDate(unlockRecord.lockDate),
+        getSuccessFailure(unlockRecord.success)
+      ))];
+  } else {
+    let loadingRows = [];
+    for (let i = 0; i < 5; i++) {
+      loadingRows.push({ status: <Skeleton /> })
+    }
+    rows = [
+      ...loadingRows.map((loadingRow) => createData(
+        loadingRow.status,
+        loadingRow.status,
+        loadingRow.status,
+        loadingRow.status,
+        loadingRow.status
+      ))
+    ];
+  }
+
+  useEffect(() => {
+    dispatch(getUnlockRecords({
+      lockId
+    }));
+  }, []);
+
+
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -217,7 +256,7 @@ export default function RecordsTable() {
     setSelected([]);
   };
 
-  
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

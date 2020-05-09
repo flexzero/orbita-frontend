@@ -19,10 +19,10 @@ const INITIAL_STATE = [
 ];
 
 export default function (state = INITIAL_STATE, action) {
-  console.log(action);
+
   switch (action.type) {
     case types.ADD_NOTIFICATION:
-      console.log("ADD_NOTIFICATION Action: ", action.payload);
+  
       return [...state, action.payload];
     case types.REMOVE_NOTIFICATION:
       let newState = [...state];

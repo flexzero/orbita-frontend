@@ -72,6 +72,44 @@ export function getUnixDateTime(date) {
   return (new Date(date).getTime());
 }
 
+
 export function delay(ms) {
   return new Promise(resolve => setTimeout(() => resolve(true), ms));
+}
+
+export function getUnlockRecordType(type) {
+  const types = [
+    "App unlock",
+    "touch the parking lock", 
+    "gateway unlock" , 
+    "passcode unlock", 
+    "parking lock raise", 
+    "parking lock lower", 
+    "IC card unlock", 
+    "fingerprint unlock", 
+    "wristband unlock", 
+    "mechanical key unlock", 
+     "Bluetooth lock", 
+     "gateway unlock", 
+     "unexpected unlock", 
+     "door magnet close", 
+     "door magnet open", 
+     "open from inside", 
+     "lock by fingerprint", 
+     "lock by passcode", 
+     "lock by IC card", 
+     "lock by Mechanical key", 
+     "Remote Control", 
+     "Tamper alert", 
+     "Auto Lock", 
+     "unlock by unlock key", 
+     "lock by lock key",
+     "Use INVALID Passcode several times"
+  ];
+
+  if(type > 48) {
+    return "unknown unlock type";
+  } else {
+    return types[type - 1]
+  }
 }

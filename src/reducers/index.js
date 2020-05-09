@@ -6,6 +6,7 @@ import locks from "./locksReducer";
 import passcodes from "./passcodeReducers";
 import loading from "./loadingReducers";
 import notifications from "./notifications";
+import unlockRecords from "./unlockRecordsReducer";
 
 const createRootReducer = () =>
   combineReducers({
@@ -16,5 +17,6 @@ const createRootReducer = () =>
     passcodes,
     loading,
     notifications,
+    unlockRecords,
   });
 export default createRootReducer;

@@ -14,12 +14,27 @@ const loadersData = [
   {
     id: "addPasscodeLoading",
     start: [types.ADD_PASSCODE],
-    end: [types.ADD_PASSCODE_ERROR, types.ADD_PASSCODE_SUCCESS]
+    end: [types.ADD_PASSCODE_SUCCESS, types.ADD_PASSCODE_ERROR]
   },
   {
     id: "deletePasscodeLoading",
     start: [types.DELETE_PASSCODE],
     end: [types.DELETE_PASSCODE_ERROR, types.DELETE_PASSCODE_SUCCESS],
+  },
+  {
+    id: "editPasscodeLoading",
+    start: [types.EDIT_PASSCODE],
+    end: [types.EDIT_PASSCODE_SUCCESS, types.EDIT_PASSCODE_ERROR]
+  },
+  {
+    id: "unlockRecordsLoading",
+    start: [types.GET_RECORDS],
+    end: [types.GET_RECORDS_SUCCESS, types.GET_RECORDS_ERROR]
+  },
+  {
+    id: "getPasscodeLoading",
+    start: [types.REQUEST_PASSCODES],
+    end: [types.REQUEST_PASSCODES_SUCCESS, types.REQUEST_PASSCODES_ERROR]
   }
 ];
 

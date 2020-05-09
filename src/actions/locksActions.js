@@ -12,15 +12,14 @@ export const requestPasscodes = () => {
     }
 }
 
-export const editPasscode = (id) => {
+export const editPasscode = (payload) => {
     return {
         type: types.EDIT_PASSCODE,
-        id,
+        payload,
     }
 }
 
 export const deletePasscode = (payload) => {
-    console.log("Action deletePasscode payload: ", payload);
     return {
         type: types.DELETE_PASSCODE,
         payload,
@@ -30,6 +29,13 @@ export const deletePasscode = (payload) => {
 export const addPasscode = (payload) => {
     return {
         type: types.ADD_PASSCODE,
+        payload
+    }
+}
+
+export const getUnlockRecords = (payload) => {
+    return {
+        type: types.GET_RECORDS,
         payload
     }
 }

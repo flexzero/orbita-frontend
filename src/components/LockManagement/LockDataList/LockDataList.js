@@ -26,11 +26,13 @@ export default function LockDataList(props) {
   const { lockId } = props;
 
   if (!isObjectEmpty(passcodes)) {
-    passcodesArr = Object.keys(passcodes.byId)
-      .filter((id, i) => passcodes.byId[id].lockId === lockId)
-      .map((id, i) => passcodes.byId[id]);
+    passcodesArr = allIds.filter((id) => {
+      if (passcodes.byId[id] !== undefined) {
+        return passcodes.byId[id].lockId === lockId;
+      }
+    })
+      .map((id) => passcodes.byId[id]);
   }
-
   useDeepCompareEffect(() => {
     dispatch(requestPasscodes());
   }, [allIds]);
@@ -67,8 +69,8 @@ export default function LockDataList(props) {
             {selectedList === "passcodes" ? (
               <PasscodeTable passcodes={passcodesArr} lockId={lockId} />
             ) : (
-              <RecordsTable />
-            )}
+                <RecordsTable lockId={lockId} />
+              )}
           </Grid>
         </Grid>
       </Paper>

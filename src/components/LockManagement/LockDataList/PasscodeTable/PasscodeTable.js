@@ -290,21 +290,16 @@ export default function PasscodeTable(props) {
                         <Box display="flex" justifyContent="center">
                           <EditPasscodeDialog
                             passcodeId={row.id}
+                            passcodeName={row.name}
+                            passcode={row.passcode}
+                            startDate={row.startDate}
+                            endDate={row.validity}
                             lockId={props.lockId}
                           />
                           <DeletePasscodeDialog
                             passcodeId={row.id}
                             lockId={props.lockId}
                           />
-                          <Button
-                            size="small"
-                            variant="contained"
-                            style={styles.operationBtnStyles}
-                            color="green"
-                            startIcon={<BookIcon />}
-                          >
-                            Logs
-                          </Button>
                         </Box>
                       </TableCell>
                     </TableRow>
