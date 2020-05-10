@@ -12,7 +12,12 @@ import {
   FormControlLabel,
 } from "@material-ui/core";
 import { indigo } from "@material-ui/core/colors";
-import { useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { loginUserAction } from "../../actions/authenticationActions";
+import { withCookies, Cookies, useCookies } from "react-cookie";
+import { ADD_LOGIN } from "../../actions/";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,21 +66,37 @@ const styleSheet = {
   },
 };
 
-export default function Login(props) {
+function Login(props) {
   const classes = useStyles();
 
   const {
-      loading: {
-        loaders: { loginLoading },
-      },
+    login,
+    loading: {
+      loaders: { loginLoading },
+    },
   } = useSelector((state) => state);
+  const dispatch = useDispatch();
 
+  const [cookies, setCookie] = useCookies(['secretToken', 'username']);
+
+  const { allCookies } = props;
+
+  const { username: user, secret_token: secretToken } = login;
+
+  useEffect(() => {
+    if (allCookies.secretToken && allCookies.username) {
+      dispatch({ type: ADD_LOGIN, response: { username: allCookies.username, secret_token: allCookies.secretToken } })
+    }
+  }, []);
 
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [rememberMeChecked, setRememberMeChecked] = React.useState(true);
+
 
   const handleButtonClick = (event) => {
-    props.handleLogin(event, { username, password });
+    event.preventDefault();
+    dispatch(loginUserAction({ username, password }));
   };
 
   const handleUsernameChange = (event) => {
@@ -85,6 +106,19 @@ export default function Login(props) {
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
+
+  const handleOnRememberMeChange = (event) => {
+    setRememberMeChecked(event.target.checked);
+  }
+
+  if (secretToken) {
+    if (rememberMeChecked) {
+      setCookie('secretToken', secretToken, { path: '/' });
+      setCookie('username', user, { path: '/' });
+    }
+    return <Redirect to="/" />
+  }
+
   return (
     <div className={classes.root}>
       <Grid
@@ -150,7 +184,7 @@ export default function Login(props) {
               <Grid item style={styleSheet.gridMargin}>
                 <Box display="flex" justifyContent="flex-start">
                   <FormControlLabel
-                    control={<Checkbox name="checkedRemember" />}
+                    control={<Checkbox name="checkedRemember" checked={rememberMeChecked} onChange={handleOnRememberMeChange} />}
                     label="Remember Me"
                   />
                 </Box>
@@ -172,3 +206,5 @@ export default function Login(props) {
     </div>
   );
 }
+
+export default withCookies(Login);

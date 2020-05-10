@@ -14,6 +14,7 @@ import Header from "../Header/Header";
 import LockIcon from "@material-ui/icons/Lock";
 import AddPasscode from "../AddPasscode/AddPasscode";
 import Notification from "./Notification/Notification";
+import Login from "../Login/Login";
 
 import LockManagement from "../LockManagement/LockManagement";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -56,45 +57,27 @@ export default function Dashboard(props) {
   const classes = useStyles();
   const { login, initServer, notifications } = useSelector((state) => state);
   const { secret_token: secretToken } = login;
-  const { initialized } = initServer;
+  const { history } = props;
   const dispatch = useDispatch();
   const authData = {
     secretToken,
   };
 
+  
+
   useEffect(() => {
     dispatch(initiateServer(authData));
-  }, [initialized]);
+  }, []);
 
   if (!secretToken) {
-    return <Redirect to="/login" />;
+    return <Redirect to="/login"/>;
   }
 
   return (
     <Router>
       <div className={classes.root}>
         <CssBaseline />
-        <Header></Header>
-        {/* <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <div className={classes.toolbar} />
-          <List>
-            {["Dashboard"].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {text === "Dashboard" ? <LockIcon /> : <WifiIcon />}
-                </ListItemIcon>
-
-                <ListItemText primary={text}></ListItemText>
-              </ListItem>
-            ))}
-          </List>
-        </Drawer> */}
+        <Header history={history}></Header>
         <main className={classes.content}>
           <Switch>
             <Route exact path="/" component={GroupConainer} />

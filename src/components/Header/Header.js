@@ -7,6 +7,10 @@ import { AccountCircle } from "@material-ui/icons";
 import Menu from "@material-ui/core/Menu";
 import { Toolbar, Typography } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { LOGOUT_USER } from "../../actions";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -23,12 +27,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Header() {
+export default function Header(props) {
   const classes = useStyles();
   const auth = true;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-
+  const [cookies, setCookies, removeCookie] = useCookies(['secretToken', 'username']);
+  const dispatch = useDispatch();
+  const { history } = props;
 
   const handleMenu = event => {
     setAnchorEl(event.currentTarget);
@@ -37,6 +43,13 @@ export default function Header() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleLogout = () => {
+    removeCookie('username');
+    removeCookie('secretToken');
+    dispatch({ type: LOGOUT_USER });
+    history.push("/login");
+  }
 
   return (
     <div className={classes.root}>
@@ -74,8 +87,7 @@ export default function Header() {
                 open={open}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </div>
           )}

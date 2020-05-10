@@ -7,9 +7,9 @@ import { loginUserAction } from "../../actions/authenticationActions";
 
 export default function LoginView() {
 
-  const isLoggedIn = useSelector(state => state.login);
+  const login = useSelector(state => state.login);
 
-  const {secret_token:secretToken} = isLoggedIn;
+  const {secret_token:secretToken} = login;
 
 
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ export default function LoginView() {
   function onHandleLogin(event, authData) {
     event.preventDefault();
     
-    const {username, password} = authData;
+    const {username, password, rememberMeChecked} = authData;
 
     const data = {
       username,

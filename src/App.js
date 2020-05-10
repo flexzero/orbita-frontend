@@ -1,5 +1,5 @@
 import React from "react";
-import LoginView from "./components/Login/LoginView";
+import Login from "./components/Login/Login";
 import Dashboard from "./components/Dashboard/Dashboard";
 import {
   Switch,
@@ -9,11 +9,12 @@ import { BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
 
 function App(props) {
+  console.log("props in App Component...", props);
   return (
     <div>
       <Router>
         <Switch>
-          <Route path="/login" component={LoginView} />
+          <Route path="/login" component={Login} />
           <Route path="/" component={Dashboard} />
         </Switch>
       </Router>

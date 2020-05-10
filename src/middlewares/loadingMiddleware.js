@@ -18,7 +18,7 @@ const middleware = (key = DEFAULT_KEY) => (store) => (next) => (action) => {
       const id = startActions[action.type];
 
 
-     return next({
+      return next({
         type: types.START_LOADING,
         payload: id,
       });
