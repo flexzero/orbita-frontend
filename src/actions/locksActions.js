@@ -1,14 +1,16 @@
 import * as types from ".";
 
-export const requestLocks = () => {
+export const requestLocks = (payload) => {
     return {
-        type: types.REQUEST_LOCKS
+        type: types.REQUEST_LOCKS,
+        payload,
     }
 }
 
-export const requestPasscodes = () => {
+export const requestPasscodes = (payload) => {
     return {
         type: types.REQUEST_PASSCODES,
+        payload,
     }
 }
 
@@ -39,3 +41,4 @@ export const getUnlockRecords = (payload) => {
         payload
     }
 }
+

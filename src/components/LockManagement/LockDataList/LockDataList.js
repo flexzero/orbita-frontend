@@ -18,7 +18,9 @@ const styleSheet = {
 };
 
 export default function LockDataList(props) {
-  const passcodes = useSelector((state) => state.passcodes);
+  const { passcodes: { deletingPasscodeId }, passcodes } = useSelector((state) => state);
+  const login = useSelector(state => state.login);
+  const { secret_token:secretToken } = login;
   const { allIds } = passcodes;
   const [selectedList, setSelectedList] = useState("passcodes");
   const dispatch = useDispatch();
@@ -34,7 +36,7 @@ export default function LockDataList(props) {
       .map((id) => passcodes.byId[id]);
   }
   useDeepCompareEffect(() => {
-    dispatch(requestPasscodes());
+    dispatch(requestPasscodes({secretToken}));
   }, [allIds]);
 
   return (

@@ -7,9 +7,9 @@ import {
 } from "react-router-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
+import "typeface-roboto";
 
 function App(props) {
-  console.log("props in App Component...", props);
   return (
     <div>
       <Router>

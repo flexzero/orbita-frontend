@@ -12,7 +12,7 @@ import {
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { editPasscode } from "../../../../../actions/locksActions";
 
 const styles = {
@@ -30,10 +30,12 @@ const styles = {
 
 export default function EditPasscodeDialog(props) {
 
-  const { passcodeId: keyboardPwdId, passcodeName: keyboardPwdName, passcode: keyboardPwd, startDate, endDate , lockId} = props;
+  const { passcodeId: keyboardPwdId, passcodeName: keyboardPwdName, passcode: keyboardPwd, startDate, endDate, lockId } = props;
+  const { login: { secret_token: secretToken } } = useSelector(state => state);
+
   const [open, setOpen] = React.useState(false);
   const [selectedStartDate, handleStartDateChange] = useState(new Date(startDate));
-  const [selectedEndDate, handleEndDateChange] = useState(new Date(endDate === "Permenant" ? 0 : endDate));
+  const [selectedEndDate, handleEndDateChange] = useState(new Date(endDate === "Permanent" ? 0 : endDate));
   const [passcode, setPasscode] = useState(keyboardPwd);
   const [passcodeName, setPasscodeName] = useState(keyboardPwdName);
 
@@ -62,7 +64,8 @@ export default function EditPasscodeDialog(props) {
       passcodeName,
       passcode,
       selectedStartDate,
-      selectedEndDate
+      selectedEndDate,
+      secretToken,
     }));
     setOpen(false);
   }
@@ -87,6 +90,7 @@ export default function EditPasscodeDialog(props) {
             value={passcodeName}
             onChange={onPasscodeNameChange}
             style={styles.passcodeInputStyle}
+            disabled
           />
           <TextField
             required
@@ -98,7 +102,7 @@ export default function EditPasscodeDialog(props) {
             style={styles.passcodeInputStyle}
             onChange={onPasscodeChange}
           />
-          {endDate !== "Permenant" ? <div> <div>
+          {endDate !== "Permanent" ? <div> <div>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDateTimePicker
                 style={styles.passcodeInputStyle}

@@ -18,6 +18,8 @@ import { loginUserAction } from "../../actions/authenticationActions";
 import { withCookies, Cookies, useCookies } from "react-cookie";
 import { ADD_LOGIN } from "../../actions/";
 import { useEffect } from "react";
+import useForm from "../useForm/useForm";
+import validate from "./LoginFormValidationRules";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,6 +72,13 @@ function Login(props) {
   const classes = useStyles();
 
   const {
+    values,
+    errors,
+    handleChange,
+    handleSubmit
+  } = useForm(goLogin, validate);
+
+  const {
     login,
     loading: {
       loaders: { loginLoading },
@@ -89,23 +98,26 @@ function Login(props) {
     }
   }, []);
 
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+ 
   const [rememberMeChecked, setRememberMeChecked] = React.useState(true);
 
+  function goLogin() {
+    dispatch(loginUserAction({ username: values.username, password: values.password }));
+  }
 
-  const handleButtonClick = (event) => {
-    event.preventDefault();
-    dispatch(loginUserAction({ username, password }));
-  };
 
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  };
+  // const handleButtonClick = (event) => {
+  //   event.preventDefault();
+  //   
+  // };
 
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
+  // const handleUsernameChange = (event) => {
+  //   setUsername(event.target.value);
+  // };
+
+  // const handlePasswordChange = (event) => {
+  //   setPassword(event.target.value);
+  // };
 
   const handleOnRememberMeChange = (event) => {
     setRememberMeChecked(event.target.checked);
@@ -132,6 +144,7 @@ function Login(props) {
           <Grid item>
             <h2>Sign In</h2>
           </Grid>
+          <form onSubmit={handleSubmit} noValidate>
           <Paper className={classes.paper} elevation={3}>
             <Grid
               container
@@ -142,23 +155,29 @@ function Login(props) {
             >
               <Grid item style={styleSheet.gridMargin}>
                 <TextField
+                  error={errors.username ? true : false}
                   required
                   id="username"
                   type="standard"
-                  label="Username"
-                  value={username}
-                  onChange={handleUsernameChange}
+                  label="username"
+                  name="username"
+                  value={values.username || ''}
+                  helperText={errors.username}
+                  onChange={handleChange}
                   fullWidth
                 ></TextField>
               </Grid>
               <Grid item style={styleSheet.gridMargin}>
                 <TextField
+                  error={errors.password ? true : false}
                   required
                   id="password"
                   type="password"
                   label="Password"
-                  value={password}
-                  onChange={handlePasswordChange}
+                  name="password"
+                  value={values.password || ''}
+                  onChange={handleChange}
+                  helperText={errors.password}
                   fullWidth
                 ></TextField>
               </Grid>
@@ -168,8 +187,8 @@ function Login(props) {
                     variant="contained"
                     color="primary"
                     fullWidth
+                    type="submit"
                     disabled={loginLoading}
-                    onClick={handleButtonClick}
                   >
                     Sign In
                   </Button>
@@ -189,18 +208,9 @@ function Login(props) {
                   />
                 </Box>
               </Grid>
-              <Grid item style={styleSheet.gridMargin}>
-                <Divider style={styleSheet.dashedDivider}></Divider>
-              </Grid>
-              <Grid item style={styleSheet.gridMargin}>
-                <Box display="flex" alignItems="flex-start">
-                  <a href="/forgetPassword" style={styleSheet.noUnderline}>
-                    Forgot password?
-                  </a>
-                </Box>
-              </Grid>
             </Grid>
           </Paper>
+          </form>
         </Grid>
       </Grid>
     </div>

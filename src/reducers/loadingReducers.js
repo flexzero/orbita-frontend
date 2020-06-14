@@ -35,6 +35,11 @@ const loadersData = [
     id: "getPasscodeLoading",
     start: [types.REQUEST_PASSCODES],
     end: [types.REQUEST_PASSCODES_SUCCESS, types.REQUEST_PASSCODES_ERROR]
+  },
+  {
+    id: "getReservationsLoading",
+    start: [types.GET_RESERVATIONS],
+    end: [types.GET_RESERVATIONS_SUCCESS, types.GET_RESERVATIONS_ERROR]
   }
 ];
 

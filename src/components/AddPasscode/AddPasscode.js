@@ -25,7 +25,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { addPasscode } from "../../actions/locksActions";
 import { getUnixDateTime } from "../../utils/utils";
 import { Link as RouterLink } from "react-router-dom";
-import { useHistory } from "react-router-dom";
+import useForm from "../useForm/useForm";
+import validate from "./AddPasscodeFormValidationRules";
+
 
 const styleSheet = {
   containerPaperStyle: {
@@ -53,14 +55,18 @@ const styleSheet = {
   }
 };
 
+
+
 export default function AddPasscode(props) {
   const classes = makeStyles();
+
 
   const [type, setType] = React.useState(10);
   const [selectedStartDate, handleStartDateChange] = useState(new Date());
   const [selectedEndDate, handleEndDateChange] = useState(new Date());
   const [passcode, setPasscode] = useState("");
   const [passcodeName, setPasscodeName] = useState("");
+  const { login: { secret_token: secretToken } } = useSelector(state => state);
   const dispatch = useDispatch();
 
   const {
@@ -71,6 +77,13 @@ export default function AddPasscode(props) {
   } = props;
 
   const { addPasscodeLoading } = useSelector(state => state.loading.loaders);
+
+  const {
+    values,
+    errors,
+    handleChange,
+    handleSubmit
+  } = useForm(handleAddPasscode, validate)
 
   const getRandomPasscode = () => {
     setPasscode(generateRandomPasscode());
@@ -89,9 +102,14 @@ export default function AddPasscode(props) {
         startDate: getUnixDateTime(selectedStartDate),
         endDate: getUnixDateTime(selectedEndDate),
         history,
+        secretToken,
       })
     );
   };
+
+  function handleAddPasscode() {
+    console.log("Handle add passcode clicked.");
+  }
 
   const onChangePasscodeName = (e) => {
     setPasscodeName(e.target.value);

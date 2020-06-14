@@ -8,7 +8,6 @@ import Menu from "@material-ui/core/Menu";
 import { Toolbar, Typography } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { LOGOUT_USER } from "../../actions";
 

@@ -1,24 +1,7 @@
 import * as types from "../actions";
 
-const INITIAL_STATE = [
-  {
-    id: 0,
-    severity: "success",
-    message: "this is message 1 of id 0",
-  },
-  {
-    id: 1,
-    severity: "error",
-    message: "this is message of id 1",
-  },
-  {
-    id: 2,
-    severity: "warning",
-    message: "this is warning message",
-  },
-];
 
-export default function (state = INITIAL_STATE, action) {
+export default function (state = [], action) {
 
   switch (action.type) {
     case types.ADD_NOTIFICATION:

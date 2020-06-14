@@ -13,12 +13,11 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
-import Button from "@material-ui/core/Button";
-import BookIcon from "@material-ui/icons/Book";
-import "./PasscodeTable.css";
 import { epochToDate } from "../../../../utils/utils";
 import EditPasscodeDialog from "./EditPasscodeDialog/EditPasscodeDialog";
 import DeletePasscodeDialog from "./DeletePasscodeDialog/DeletePasscodeDialog";
+import Skeleton from '@material-ui/lab/Skeleton';
+import { useSelector } from "react-redux";
 
 function createData(
   id,
@@ -149,13 +148,13 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === "light"
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark,
+      },
   title: {
     flex: "1 1 100%",
   },
@@ -217,25 +216,51 @@ export default function PasscodeTable(props) {
   const [orderBy, setOrderBy] = React.useState("calories");
   const selected = [];
   const dense = false;
+  const { loading: { loaders: { getPasscodeLoading } } } = useSelector(state => state);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const { passcodes } = props;
 
-  const rows = [
-    ...passcodes.map((passcode) =>
-      createData(
-        passcode.keyboardPwdId,
-        passcode.keyboardPwdName || "No Name",
-        passcode.keyboardPwd,
-        passcode.recieverUsername || "Admin",
-        epochToDate(passcode.sendDate),
-        epochToDate(passcode.startDate),
-        passcode.endDate ? epochToDate(passcode.endDate) : "Permenant",
-        passcode.status
-      )
-    ),
-  ];
+  let rows = [];
+
+
+
+  if (getPasscodeLoading) {
+    let loadingRows = [];
+    for (let i = 0; i < 5; i++) {
+      loadingRows.push({ status: <Skeleton /> })
+    }
+    rows = [
+      ...loadingRows.map((loadingRow) => createData(
+        loadingRow.status,
+        loadingRow.status,
+        loadingRow.status,
+        loadingRow.status,
+        loadingRow.status,
+        loadingRow.status,
+        loadingRow.status,
+      ))
+    ];
+
+    console.log("The rows if loading: ", rows);
+  } else {
+    rows = [
+      ...passcodes.map((passcode) =>
+        createData(
+          passcode.keyboardPwdId,
+          passcode.keyboardPwdName || "No Name",
+          passcode.keyboardPwd,
+          passcode.recieverUsername || "Admin",
+          epochToDate(passcode.sendDate),
+          epochToDate(passcode.startDate),
+          passcode.endDate ? epochToDate(passcode.endDate) : "Permanent",
+          passcode.status
+        )
+      )];
+
+      console.log("The rows if not loading: ", rows);
+  }
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -278,7 +303,7 @@ export default function PasscodeTable(props) {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   return (
-                    <TableRow hover tabIndex={-1} key={row.name}>
+                    <TableRow hover tabIndex={-1} key={row.id}>
                       <TableCell align="center">{row.name}</TableCell>
                       <TableCell align="center">{row.passcode}</TableCell>
                       <TableCell align="center">{row.assigner}</TableCell>
@@ -287,20 +312,22 @@ export default function PasscodeTable(props) {
                       <TableCell align="center">{row.validity}</TableCell>
                       <TableCell align="center">{row.status}</TableCell>
                       <TableCell>
-                        <Box display="flex" justifyContent="center">
-                          <EditPasscodeDialog
-                            passcodeId={row.id}
-                            passcodeName={row.name}
-                            passcode={row.passcode}
-                            startDate={row.startDate}
-                            endDate={row.validity}
-                            lockId={props.lockId}
-                          />
-                          <DeletePasscodeDialog
-                            passcodeId={row.id}
-                            lockId={props.lockId}
-                          />
-                        </Box>
+                        {getPasscodeLoading ? <Skeleton /> :
+                          <Box display="flex" justifyContent="center">
+                            <EditPasscodeDialog
+                              passcodeId={row.id}
+                              passcodeName={row.name}
+                              passcode={row.passcode}
+                              startDate={row.startDate}
+                              endDate={row.validity}
+                              lockId={props.lockId}
+                            />
+                            <DeletePasscodeDialog
+                              passcodeId={row.id}
+                              lockId={props.lockId}
+                            />
+                          </Box>
+                        }
                       </TableCell>
                     </TableRow>
                   );

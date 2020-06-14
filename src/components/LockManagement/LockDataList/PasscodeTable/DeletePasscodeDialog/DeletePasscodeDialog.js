@@ -27,13 +27,10 @@ const styles = {
 export default function DeletePasscodeDialog(props) {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
-
+  
   const { lockId, passcodeId } = props;
+  const { loading: { loaders: { deletePasscodeLoading } }, passcodes: { deletingPasscodeId }, login: { secret_token:secretToken} } = useSelector((state) => state);
 
-  const { deletingPasscodeId } = useSelector((state) => state.passcodes);
-  const { deletePasscodeLoading } = useSelector(
-    (state) => state.loading.loaders
-  );
 
   const isDeleting = () => {
     return passcodeId === deletingPasscodeId;
@@ -48,7 +45,7 @@ export default function DeletePasscodeDialog(props) {
   };
 
   const handleDelete = () => {
-    dispatch(deletePasscode({ lockId, passcodeId }));
+    dispatch(deletePasscode({ lockId, passcodeId, secretToken }));
     setOpen(false);
   };
 

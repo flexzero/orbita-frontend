@@ -13,13 +13,12 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import { useEffect } from "react";
-import { getUnlockRecords } from "../../../../actions/locksActions";
+import { getReservations } from "../../../actions/reservationsActions";
 import { useDispatch, useSelector } from "react-redux";
-import { epochToDate, getUnlockRecordType } from "../../../../utils/utils";
 import Skeleton from '@material-ui/lab/Skeleton';
 
-function createData(operator, unlockMethod, unlockTime, status) {
-  return { operator, unlockMethod, unlockTime, status };
+function createData(res_id, area, nights, arrive, pin_status, status) {
+  return { res_id, area, nights, arrive, pin_status, status };
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -49,18 +48,30 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: "operator", numeric: false, disablePadding: false, label: "Operator" },
+  { id: "res_id", numeric: false, disablePadding: false, label: "ID" },
   {
-    id: "unlockmethod",
+    id: "area",
     numeric: true,
     disablePadding: false,
-    label: "Unlock Method"
+    label: "Room"
   },
   {
-    id: "unlocktime",
+    id: "nights",
     numeric: true,
     disablePadding: false,
-    label: "Unlock Time"
+    label: "Nights"
+  },
+  {
+    id: "arrive",
+    numeric: true,
+    disablePadding: false,
+    label: "Arriving at"
+  },
+  {
+    id: "pin_status",
+    numeric: true,
+    disablePadding: false,
+    label: "Passcode Status"
   },
   {
     id: "status",
@@ -190,7 +201,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function RecordsTable(props) {
+export default function ReservationsTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -199,31 +210,29 @@ export default function RecordsTable(props) {
   const dense = false;
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const dispatch = useDispatch();
-  const { unlockRecords, login: { secret_token: secretToken }, loading: { loaders: { unlockRecordsLoading } } } = useSelector((state) => state);
-  const { lockId } = props;
-
-  const getSuccessFailure = (success) => {
-    return success === 0 ? <span style={{ color: "red" }}>unlock failed</span> : <span style={{ color: "green" }}> unlock successfull</span>;
-  }
+  const { reservations, login: { secret_token: secretToken }, loading: { loaders: { getReservationsLoading } } } = useSelector((state) => state);
 
 
   let rows = [];
 
-  if (!unlockRecordsLoading) {
+  if (!getReservationsLoading) {
     rows = [
-      ...unlockRecords.map((unlockRecord) => createData(
-        unlockRecord.username,
-        getUnlockRecordType(unlockRecord.recordType),
-        epochToDate(unlockRecord.lockDate),
-        getSuccessFailure(unlockRecord.success)
+      ...reservations.map((res) => createData(
+        res.res_id || "No Reservation",
+        res.area || "No Reservation",
+        res.nights || "No Reservation",
+        res.arrive || "No Reservation",
+        res.pin_status || (res.status === "Arrived" ? "Customer already arrived" : "No Reservation"),
+        res.status|| "No Reservation",
       ))];
   } else {
     let loadingRows = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 1; i++) {
       loadingRows.push({ status: <Skeleton /> })
     }
     rows = [
       ...loadingRows.map((loadingRow) => createData(
+        loadingRow.status,
         loadingRow.status,
         loadingRow.status,
         loadingRow.status,
@@ -234,8 +243,7 @@ export default function RecordsTable(props) {
   }
 
   useEffect(() => {
-    dispatch(getUnlockRecords({
-      lockId,
+    dispatch(getReservations({
       secretToken,
     }));
   }, []);
@@ -297,14 +305,13 @@ export default function RecordsTable(props) {
                 .map((row, index) => {
                   return (
                     <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.name}
+                      key={row.area}
                     >
-                      <TableCell align="center">{row.operator}</TableCell>
-                      <TableCell align="center">{row.unlockMethod}</TableCell>
-                      <TableCell align="center">{row.unlockTime}</TableCell>
+                      <TableCell align="center">{row.res_id}</TableCell>
+                      <TableCell align="center">{row.area}</TableCell>
+                      <TableCell align="center">{row.nights}</TableCell>
+                      <TableCell align="center">{row.arrive}</TableCell>
+                      <TableCell align="center">{row.pin_status}</TableCell>
                       <TableCell align="center">{row.status}</TableCell>
                     </TableRow>
                   );

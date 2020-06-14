@@ -1,32 +1,35 @@
 import baseUrl from "../utils/baseUrl";
 import axios from "axios";
 import qs from "querystring";
-import { getUnixDateTime } from "../utils/utils";
+import { getUnixDateTime, getBarearHeader } from "../utils/utils";
 
-export async function requestLocks() {
+export async function requestLocks(payload) {
   const REQUEST_LOCKS_ENDPOINT = baseUrl("locks", true);
-
+  const { payload: { secretToken: secret_token } } = payload;
+  const header = getBarearHeader(secret_token);
   try {
-    const requestLocksResponse = await axios.get(REQUEST_LOCKS_ENDPOINT);
+    const requestLocksResponse = await axios.get(REQUEST_LOCKS_ENDPOINT, header);
+    console.log("the requst locks response: ", requestLocksResponse);
     return requestLocksResponse.data;
-  } catch (err) {
-    console.log(err);
-    return err;
+  } catch (error) {
+    throw (error);
   }
 }
 
-export async function requestPasscodes() {
+export async function requestPasscodes(payload) {
   const REQUEST_PASSCODES_ENDPOINT = baseUrl("passcodes", true);
+  const { payload: { secretToken: secret_token } } = payload;
+  const header = getBarearHeader(secret_token);
 
   try {
 
     const requestPasscodesResponse = await axios.get(
-      REQUEST_PASSCODES_ENDPOINT
+      REQUEST_PASSCODES_ENDPOINT,
+      header
     );
     return requestPasscodesResponse.data;
-  } catch (err) {
-    console.log(err);
-    return err;
+  } catch (error) {
+    throw (error);
   }
 }
 
@@ -34,30 +37,36 @@ export async function addPasscode(payload) {
   const ADD_PASSCODE_ENDPOINT = baseUrl("addpasscode", true);
 
   const {
-    lockId,
-    passcodeName,
-    passcode,
-    startDate,
-    endDate,
-  } = payload.payload;
+    payload: {
+      lockId,
+      passcodeName,
+      passcode,
+      startDate,
+      endDate,
+      secretToken: secret_token,
+    }
+  } = payload;
+
+  const header = getBarearHeader(secret_token);
 
   const postParams = { lockId, passcodeName, passcode, startDate, endDate };
 
   try {
     const requestResponse = await axios.post(
       ADD_PASSCODE_ENDPOINT,
-      qs.stringify(postParams)
+      qs.stringify(postParams),
+      header
     );
-    console.log("the data: ", requestResponse.data);
     return requestResponse.data;
   } catch (error) {
-    console.log(error);
+    throw (error);
   }
 }
 
 export async function deletePasscode(payload) {
   const DELETE_PASSCODE_ENDPOINT = baseUrl("deletepasscode", true);
-  const { lockId, passcodeId: keyboardPwdId } = payload.payload;
+  const { payload: { lockId, passcodeId: keyboardPwdId, secretToken: secret_token } } = payload;
+  const header = getBarearHeader(secret_token);
 
   const postParams = qs.stringify({
     lockId,
@@ -65,42 +74,46 @@ export async function deletePasscode(payload) {
   });
 
   try {
-    const response = await axios.post(DELETE_PASSCODE_ENDPOINT, postParams);
+    const response = await axios.post(DELETE_PASSCODE_ENDPOINT, postParams, header);
     return response.data;
   } catch (error) {
-    console.log(error);
+    throw (error);
   }
 }
 
 export async function editPasscode(payload) {
   const EDIT_PASSCODE_ENDPOINT = baseUrl("editpasscode", true);
-  const { lockId, keyboardPwdId, passcodeName: keyboardPwdName, passcode: keyboardPwd, selectedStartDate: startDate, selectedEndDate: endDate } = payload.payload;
+  const { payload: { lockId, keyboardPwdId, passcodeName: keyboardPwdName, passcode: keyboardPwd, selectedStartDate: startDate, selectedEndDate: endDate, secretToken:secret_token } } = payload;
+  const header = getBarearHeader(secret_token);
   const postParams = qs.stringify({
     lockId,
     keyboardPwdId,
     keyboardPwdName,
     keyboardPwd,
     startDate: getUnixDateTime(startDate),
-    endDate: getUnixDateTime(endDate)
+    endDate: getUnixDateTime(endDate),
   });
 
   try {
-    const response = await axios.post(EDIT_PASSCODE_ENDPOINT, postParams);
+    const response = await axios.post(EDIT_PASSCODE_ENDPOINT, postParams, header);
     return response.data;
   } catch (error) {
-    console.log(error);
+    throw (error);
   }
 
 }
 
 export async function getUnlockRecords(payload) {
   const GET_UNLOCK_RECORDS_ENDPOINT = baseUrl("getunlockrecords", true);
-  const { lockId } = payload.payload;
-  const postParams = qs.stringify({lockId});
+  const { payload: { lockId, secretToken: secret_token } } = payload;
+  const header = getBarearHeader(secret_token);
+
+  const postParams = qs.stringify({ lockId });
   try {
-    const response = await axios.post(GET_UNLOCK_RECORDS_ENDPOINT, postParams);
+    const response = await axios.post(GET_UNLOCK_RECORDS_ENDPOINT, postParams, header);
+    console.log("response from: ", response);
     return response;
   } catch (error) {
-    console.log(error);
+    throw (error);
   }
 }

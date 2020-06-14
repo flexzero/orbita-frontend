@@ -7,5 +7,4 @@ export function* addNotificationSaga(response) {
   const { payload: { id }} = response;
   yield call(delay, 6000);
   yield put({type: types.REMOVE_NOTIFICATION, payload: {id}});
-  
 }

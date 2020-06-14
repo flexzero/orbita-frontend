@@ -10,7 +10,7 @@ import "./LockCard.css";
 import { useHistory } from "react-router-dom";
 
 export default function LockCard(props) {
-  const { lockData, isLoading } = props;
+  const { lockData, selectedRoom } = props;
 
   const history = useHistory();
 

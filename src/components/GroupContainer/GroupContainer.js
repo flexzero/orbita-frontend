@@ -13,6 +13,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Typography from "@material-ui/core/Typography";
+import ReservationsTable from "../GroupContainer/ReservationsTable/ReservationsTable";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import LockDataList from "../LockManagement/LockDataList/LockDataList";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,28 +37,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function GroupConainer(props) {
-  const [lockUser, setLockUser] = React.useState(0);
+  const [sRoom, setRoom] = React.useState(0);
 
-  const { locks: { locks, users } } = useSelector((state) => state);
+  const { locks: { locks }, reservations, loading: { loaders: { locksLoading, getReservationsLoading } } } = useSelector((state) => state);
 
   const handleChange = (event) => {
-    setLockUser(event.target.value);
+    setRoom(event.target.value);
   };
 
-  let selectedLocks = [];
-  if (users && lockUser !== 0) {
-    selectedLocks = [users.byId[lockUser].assignedLockId];
-  } else if (users && lockUser === 0) {
-    const allAssignedIds = users.allIds.map(id => users.byId[id].assignedLockId);
-    selectedLocks = locks.allIds.filter(id => !allAssignedIds.includes(id));
+  let selectedRoom = null;
+  if (reservations) {
+    selectedRoom = reservations[sRoom]
   }
-
 
   const classes = useStyles();
   return (
     <div>
       <Breadcrumbs aria-label="breadcrumb">
-      <Typography color="textPrimary">Dashboard</Typography>
+        <Typography color="textPrimary">Dashboard</Typography>
       </Breadcrumbs>
       <div className={classes.root}>
         <Grid container>
@@ -68,7 +66,7 @@ export default function GroupConainer(props) {
                 </Grid>
                 <Box display="flex" justifyContent="space-between">
                   <Box display="flex">
-                    <FormControl
+                    {(locksLoading || getReservationsLoading) ? <CircularProgress /> : <FormControl
                       variant="outlined"
                       className={classes.formControl}
                       size="small"
@@ -78,25 +76,27 @@ export default function GroupConainer(props) {
                       <Select
                         labelId="user-select"
                         id="user-select-id"
-                        value={lockUser}
+                        value={sRoom}
                         onChange={handleChange}
                         label="Users"
                         size="small"
                       >
-                        {users ? users.allIds.map((id, i) => <MenuItem value={id}>{`${users.byId[id].firstName} ${users.byId[id].lastName}`}</MenuItem>) : <MenuItem value={0} selected>Loading...</MenuItem>}
-                        <MenuItem value={0}>Not Assigned</MenuItem>
+                        {reservations ? reservations.map((res, i) => <MenuItem value={i} key={i}>{`${res.area}`}</MenuItem>) : <MenuItem value={555} selected>Loading...</MenuItem>}
                       </Select>
-                    </FormControl>
+                    </FormControl>}
                   </Box>
                 </Box>
                 <div className={classes.locksContainer}>
-                  <LockList selectedLocks={selectedLocks} />
+                  <LockList selectedRoom={selectedRoom} />
                 </div>
               </Grid>
             </Paper>
           </Grid>
         </Grid>
       </div>
+      <div>
+      </div>
+      <ReservationsTable />
     </div>
   );
 }

@@ -19,7 +19,7 @@ export async function initServerService(request) {
     );
     return initServerResponse.data;
   } catch (err) {
-    console.log(err);
-    return err;
+    console.dir(err);
+    throw(err);
   }
 }

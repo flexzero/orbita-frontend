@@ -55,19 +55,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard(props) {
   const classes = useStyles();
-  const { login, initServer, notifications } = useSelector((state) => state);
+  const { login, notifications } = useSelector((state) => state);
   const { secret_token: secretToken } = login;
   const { history } = props;
-  const dispatch = useDispatch();
-  const authData = {
-    secretToken,
-  };
-
-  
-
-  useEffect(() => {
-    dispatch(initiateServer(authData));
-  }, []);
 
   if (!secretToken) {
     return <Redirect to="/login"/>;
